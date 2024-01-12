@@ -7,12 +7,15 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class SchematorCommand extends Command {
-    protected $signature = 'schemator:generate {options?}';
+    protected $signature = 'schemator:generate {options?} {--skip= : Comma-separated list of tables to skip}';
+
     protected $description = 'Generate models with properties and relationships from the database schema';
     protected $createdMethods = [];
 
     public function handle() {
         $optionString = $this->argument('options');
+        $skipTables = $this->option('skip') ? explode(',', $this->option('skip')) : [];
+
 
         $filament = str_contains($optionString, 'f');
         $simple = str_contains($optionString, 's');
@@ -25,6 +28,11 @@ class SchematorCommand extends Command {
         $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
 
         foreach ($tables as $table) {
+            //for skipping certain tables
+            if (in_array($table, $skipTables)) {
+                $this->info("Skipping table: $table");
+                continue;
+            }
             $this->generateModel($table,$tables);
 
             if ($filament && $this->isFilamentInstalled()) {
