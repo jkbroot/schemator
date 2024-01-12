@@ -1,8 +1,9 @@
 <?php
 
+namespace Jkbcoder\Schemator;
 
-use Console\Commands\SchematorCommand;
 use Illuminate\Support\ServiceProvider;
+use Jkbcoder\Schemator\Console\Commands\SchematorCommand;
 
 class SchematorServiceProvider extends ServiceProvider {
     public function boot() {

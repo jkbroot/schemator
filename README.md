@@ -4,10 +4,10 @@ Schemator is a Laravel package designed to automate the process of generating El
 
 ## Features
 
-- Automatically generates Eloquent models for each table in your database.
-- Supports generation of `belongsTo` and `hasMany` relationships.
-- Capable of generating Filament resources if Filament is installed.
-- Adds a comment to each model indicating it was created by Schemator.
+- Automatically generates Eloquent models for each database table.
+- Supports a wide array of relationships including `belongsTo`, `hasMany`, `hasOne`, `belongsToMany`, `morphOne`, and `morphMany`.
+- Generates Filament resources if Filament is installed, with support for various options like `--simple`, `--generate`, `--soft-deletes`, and `--view`.
+- Embeds a comment in each model indicating creation by Schemator for clarity and tracking.
 
 ## Requirements
 
@@ -26,6 +26,7 @@ composer require 0jkb/Schemator
 After installation, you can use the Artisan command provided by Schemator.
 
 Usage
+
 To generate models and optionally Filament resources, run:
 ```
 php artisan schemator:generate [options]

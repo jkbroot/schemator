@@ -1,6 +1,6 @@
 {
     "name": "0jkb/schemator",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A Laravel package to auto-generate models and resources based on database schema.",
     "type": "library",
     "keywords": ["schemator", "laravel"],
