@@ -7,15 +7,17 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class SchematorCommand extends Command {
-    protected $signature = 'schemator:generate {options?} {--skip= : Comma-separated list of tables to skip}';
-
+    protected $signature = 'schemator:generate {options?} {--skip= : Comma-separated list of tables to skip} {--skip-default : Skip Laravel default tables}';
     protected $description = 'Generate models with properties and relationships from the database schema';
     protected $createdMethods = [];
 
     public function handle() {
+
         $optionString = $this->argument('options');
         $skipTables = $this->option('skip') ? explode(',', $this->option('skip')) : [];
-
+        $skipDefault = $this->option('skip-default');
+        $defaultTables = $skipDefault ? ['password_reset_tokens', 'failed_jobs', 'personal_access_tokens'] : [];
+        $skipTables = array_merge($skipTables, $defaultTables);
 
         $filament = str_contains($optionString, 'f');
         $simple = str_contains($optionString, 's');
@@ -26,6 +28,8 @@ class SchematorCommand extends Command {
         $this->info('Starting Schemator...');
 
         $tables = Schema::getConnection()->getDoctrineSchemaManager()->listTableNames();
+
+
 
         foreach ($tables as $table) {
             //for skipping certain tables
