@@ -7,14 +7,13 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class SchematorCommand extends Command {
-    protected $signature = 'schemator:generate {--f|filament-options= : Filament options (g, s, d, v)} {--skip= : Tables to skip}  {--skip-default : Skip Laravel default tables} {--only=* : Specific tables to generate}';
+    protected $signature = 'schemator:generate  {--f|filament-options= : Filament options (g, s, d, v)} {--skip= : Tables to skip}  {--skip-default : Skip Laravel default tables} {--only=* : Specific tables to generate}';
 
     protected $description = 'Generate Eloquent models with relationships and optional Filament resources, supporting selective table generation and exclusion.';
     protected $createdMethods = [];
 
     public function handle() {
 
-//        $optionString = $this->argument('options');
         $skipTables = $this->option('skip') ? explode(',', $this->option('skip')) : [];
         $skipDefault = $this->option('skip-default');
         $defaultTables = $skipDefault ? ['password_reset_tokens', 'failed_jobs', 'personal_access_tokens'] : [];
@@ -62,10 +61,27 @@ class SchematorCommand extends Command {
         $columns = Schema::getColumnListing($tableName);
         $properties = implode(', ', array_map(fn($column) => "'$column'", $columns));
 
-        $modelTemplate = "<?php";
-        $modelTemplate .= "\n\n/**\n * Created by Schemator Model.\n */\n";
-        $modelTemplate .= "\n\nnamespace App\Models;\n\nuse Illuminate\Database\Eloquent\Model;\n\n";
-        $modelTemplate .= "class $className extends Model\n{\n  protected \$table = '$tableName';\n    protected \$fillable = [$properties];\n\n";
+
+        if ($tableName === 'users' && $this->isFilamentInstalled()) {
+            $modelTemplate = "<?php";
+            $modelTemplate .= "\n\n/**\n * Created by Schemator Model.\n */\n";
+            $modelTemplate .= "\nnamespace App\Models;\n\n";
+            $modelTemplate .= "use Illuminate\Database\Eloquent\Factories\HasFactory;\n";
+            $modelTemplate .= "use Illuminate\Foundation\Auth\User as Authenticatable;\n";
+            $modelTemplate .= "use Illuminate\Notifications\Notifiable;\n";
+            $modelTemplate .= "use Laravel\Sanctum\HasApiTokens;\n\n";
+            $modelTemplate .= "class User extends Authenticatable\n{\n";
+            $modelTemplate .= "use HasApiTokens, HasFactory, Notifiable;\n\n";
+            $modelTemplate .= "protected \$table = '$tableName';\n    protected \$fillable = [$properties];\n\n";
+
+        } else {
+            $modelTemplate = "<?php";
+            $modelTemplate .= "\n\n/**\n * Created by Schemator Model.\n */\n";
+            $modelTemplate .= "\n\nnamespace App\Models;\n\nuse Illuminate\Database\Eloquent\Model;\n\n";
+            $modelTemplate .= "class $className extends Model\n{\n  protected \$table = '$tableName';\n\n protected \$fillable = [$properties];\n\n";
+        }
+
+
 
         $foreignKeys = $this->getForeignKeys($tableName);
         foreach ($foreignKeys as $foreignKey) {
