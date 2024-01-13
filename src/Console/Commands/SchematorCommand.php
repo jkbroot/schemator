@@ -7,26 +7,28 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class SchematorCommand extends Command {
-    protected $signature = 'schemator:generate {options?} {--skip= : Comma-separated list of tables to skip} {--skip-default : Skip Laravel default tables} {--only=* : Generate models only for specified tables}';
+    protected $signature = 'schemator:generate {--f|filament-options= : Filament options (g, s, d, v)} {--skip= : Tables to skip}  {--skip-default : Skip Laravel default tables} {--only=* : Specific tables to generate}';
 
-    protected $description = 'Generate models with properties and relationships from the database schema';
+    protected $description = 'Generate Eloquent models with relationships and optional Filament resources, supporting selective table generation and exclusion.';
     protected $createdMethods = [];
 
     public function handle() {
 
-        $optionString = $this->argument('options');
+//        $optionString = $this->argument('options');
         $skipTables = $this->option('skip') ? explode(',', $this->option('skip')) : [];
         $skipDefault = $this->option('skip-default');
         $defaultTables = $skipDefault ? ['password_reset_tokens', 'failed_jobs', 'personal_access_tokens'] : [];
         $skipTables = array_merge($skipTables, $defaultTables);
         $onlyTables = $this->option('only');
 
+        $filamentOptions = $this->option('filament-options');
+        $filament = $filamentOptions !== null;
 
-        $filament = str_contains($optionString, 'f');
-        $simple = str_contains($optionString, 's');
-        $generate = str_contains($optionString, 'g');
-        $softDeletes = str_contains($optionString, 'd');
-        $view = str_contains($optionString, 'v');
+
+        $simple = str_contains($filamentOptions, 's');
+        $generate = str_contains($filamentOptions, 'g');
+        $softDeletes = str_contains($filamentOptions, 'd');
+        $view = str_contains($filamentOptions, 'v');
 
         $this->info('Starting Schemator...');
 
