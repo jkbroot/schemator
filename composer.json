@@ -1,7 +1,6 @@
 {
     "name": "0jkb/schemator",
-    "version": "1.1.0",
-    "description": "A Laravel package to auto-generate models and resources based on database schema.",
+    "description": "Schemator is an advanced Laravel package designed to streamline development workflows by automatically generating Eloquent models and optional Filament resources. It offers features like selective table generation, skipping default Laravel tables, and enhanced model generation with Laravel Sanctum support for the User model.",
     "type": "library",
     "keywords": ["schemator", "laravel"],
     "license": "MIT",

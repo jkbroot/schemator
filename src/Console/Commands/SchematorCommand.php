@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class SchematorCommand extends Command {
-    protected $signature = 'schemator:generate  {--f|filament-options= : Filament options (g, s, d, v)} {--skip= : Tables to skip}  {--skip-default : Skip Laravel default tables} {--only=* : Specific tables to generate}';
+    protected $signature = 'schemator:generate  {--f|filament-options= : Filament options (generate, simple, deletes, view)} {--skip= : Tables to skip}  {--skip-default : Skip Laravel default tables} {--only=* : Specific tables to generate}';
 
     protected $description = 'Generate Eloquent models with relationships and optional Filament resources, supporting selective table generation and exclusion.';
     protected $createdMethods = [];
@@ -16,18 +16,24 @@ class SchematorCommand extends Command {
 
         $skipTables = $this->option('skip') ? explode(',', $this->option('skip')) : [];
         $skipDefault = $this->option('skip-default');
-        $defaultTables = $skipDefault ? ['password_reset_tokens', 'failed_jobs', 'personal_access_tokens'] : [];
+
+        $defaultTables = $skipDefault ? [
+            'password_reset_tokens',
+            'failed_jobs',
+            'personal_access_tokens',
+            'migrations'
+        ] : [];
+
         $skipTables = array_merge($skipTables, $defaultTables);
         $onlyTables = $this->option('only');
 
         $filamentOptions = $this->option('filament-options');
         $filament = $filamentOptions !== null;
 
-
-        $simple = str_contains($filamentOptions, 's');
-        $generate = str_contains($filamentOptions, 'g');
-        $softDeletes = str_contains($filamentOptions, 'd');
-        $view = str_contains($filamentOptions, 'v');
+        $generate = str_contains($filamentOptions, 'g') || str_contains($filamentOptions, 'generate');
+        $simple = str_contains($filamentOptions, 's') || str_contains($filamentOptions, 'simple');
+        $softDeletes = str_contains($filamentOptions, 'd') || str_contains($filamentOptions, 'deletes');
+        $view = str_contains($filamentOptions, 'v') || str_contains($filamentOptions, 'view');
 
         $this->info('Starting Schemator...');
 

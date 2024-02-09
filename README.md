@@ -28,61 +28,67 @@ After installation, you can use the Artisan command provided by Schemator.
 ## Usage :
 
 
-- -f | filament-options = to accept a string of Filament options such as g, s, d, v.
+- -f | --filament-options: Activate Filament resource generation with specific options. Accepts both shorthand (g, s, d, v, e) and full words (generate, simple, soft-deletes, view, empty). For example, -f gs or -f generate,simple.
 - --skip= for specifying tables to skip.
 - --skip-default as a flag to skip Laravel's default tables.
 - --only= to generate models for specific tables.
 
-
-To generate models and empty Filament resources, run:
-```
-php artisan schemator:generate -f=
-
-```
-- This will create several files in the app/Filament/Resources directory
-
-
-To generate models and optionally Filament resources, run:
-```
-php artisan schemator:generate -f= [options]
-
-```
-
-
-To generate models only without any additional options or generating Filament resources, you can use the schemator:generate command without specifying any options:
-```
+Generate models only :
+```bash
 php artisan schemator:generate
 ```
 
-Example for Generating Filament Resources and Using the Simple Option:
-```
-php artisan schemator:generate -f=s
-```
-This command will generate Filament resources for each table and apply the --simple option to them.
 
-Example for Generating Filament Resources and Using the Generate Option:
-```
-php artisan schemator:generate -f=g
-```
-
-Example to generate models and Filament resources with all options:
+To generate models and empty Filament resources, run (e | empty option):
+```bash
+php artisan schemator:generate -f e
 
 ```
-php artisan schemator:generate -f=sgdv
+- This will create several files in the app/Filament/Resources directory with empty form and table .
+
+
+To generate models and optionally Filament resources, run:
+```bash
+php artisan schemator:generate -f [options]
+
+```
+Generate Filament resources (s | simple option):
+```bash
+php artisan schemator:generate -f s
+```
+ - This command will generate Filament resources for each table, applying the simple option.
+
+
+Generate Filament resources (g | generate option):
+
+```bash
+php artisan schemator:generate -f g
+```
+
+Generate models and Filament resources with all options:
+
+```bash
+php artisan schemator:generate -f sgdv
 
 ```
 
-Example for full feature usage, skipping specific tables:
+Skipping specific tables(--skip option):
+```bash
+php artisan schemator:generate -f sgdv --skip=users,logs
+```
 
+Generating models for specific tables(--only option):
+```bash
+php artisan schemator:generate -f sgdv --only=users,posts
 ```
-php artisan schemator:generate -f=sgdv --skip=users,logs
+ - This command will generate models only for the 'users' and 'posts' tables.
+
+Generate models and Filament resources, skipping Laravel default tables (--skip-default option):
+```bash
+php artisan schemator:generate -f sgdv --skip-default
 ```
 
-Example for generating models for specific tables:
-```
-php artisan schemator:generate -f=sgdv --only=users,posts
-```
-###### This command will generate models only for the 'users' and 'posts' tables.
+
 
 
 
